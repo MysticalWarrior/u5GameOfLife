@@ -40,15 +40,20 @@ namespace u5GameOfLife
 
         private void btnShowInstructions_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(cells.cells[1, 1].ToString());
-            cells.AddCellGraphic(true, 0, 0, Grid);
-            cells.ClearCells(Grid);
+            for (int i = 0; i < 20; i++)
+            {
+                for (int ii = 0; ii < 20; ii++)
+                {
+                    cells.AddCellGraphic(cells.cells[i, ii], i, ii, Grid);
+                }
+            }
         }
 
         private void btnRunDay_Click(object sender, RoutedEventArgs e)
         {
-            cells.ClearCells(Grid);
+            Grid.Children.Clear();
             cells.CheckCells(Grid);
+            cells.Changes();
         }
     }
 }
