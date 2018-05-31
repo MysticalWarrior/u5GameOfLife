@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,8 +13,10 @@ namespace u5GameOfLife
     class Cells
     {
         public bool[,] cells = new bool[20, 20];
+        public bool[,] tempCells = new bool[20, 20];
         public int liveCounter = 0;
         public int deadCounter = 0;
+        public string troubleshoot = "";
         //true = alive
         //false = dead
         public Cells()
@@ -26,6 +28,15 @@ namespace u5GameOfLife
                     cells[i, ii] = false;
                 }
             }*/
+            addItem(5, 5);
+            addItem(5, 6);
+            addItem(5, 7);
+            addItem(6, 5);
+            addItem(6, 6);
+            addItem(6, 7);
+            addItem(7, 5);
+            addItem(7, 6);
+            addItem(7, 7);
         }
 
         public void addItem(int x, int y)
@@ -37,7 +48,7 @@ namespace u5GameOfLife
                     if (i == x & ii == y)
                     {
                         cells[i, ii] = true;
-                        MessageBox.Show(cells[i, ii].ToString());
+                        //MessageBox.Show(cells[i, ii].ToString());
                     }
                 }
             }
@@ -45,20 +56,19 @@ namespace u5GameOfLife
 
         public void CheckCells(Canvas canvas)
         {
-            cells[5, 5] = true;
-            AddCellGraphic(cells[5, 5], 5, 5, canvas);
-
+            tempCells = cells;
             for (int i = 0; i < 20; i++)
             {
                 for (int ii = 0; ii < 20; ii++)
                 {
-                    /*for (int I = i - 1; I < i + 1; I++)//capital i is a temporary one.
+                    //begin checking surounding
+                    for (int I = i - 1; I <= i + 1; I++)
                     {
                         if (I != -1 & I != 20)
                         {
-                            for (int II = ii - 1; II < ii + 1; II++)
+                            for (int II = ii - 1; II <= ii + 1; II++)
                             {
-                                if (II != -1 & II != 20)
+                                if (II != -1 & II != 20 & II != ii & i != I)
                                 {
                                     if (cells[I, II])
                                     {
@@ -69,24 +79,40 @@ namespace u5GameOfLife
                         }
                     }
 
-                    if (cells[i, ii])
+                    if (cells[i, ii] == true)
                     {
-                        if (liveCounter < 2)
+                        if (liveCounter == 2 || liveCounter == 3)
                         {
-                            cells[i, ii] = false;
+                            AddCellGraphic(true, i, ii, canvas);
+                            troubleshoot += "t" + i.ToString() + ii.ToString() + '\r';
                         }
-                        else if (liveCounter > 3)
+                        else
                         {
-                            cells[i, ii] = false;
+                            AddCellGraphic(false, i, ii, canvas);
                         }
                     }
                     else if (cells[i, ii] = false & liveCounter == 3)
                     {
-                        cells[i, ii] = true;
-                    }*/
+                        AddCellGraphic(true, i, ii, canvas);
+                        troubleshoot += "t" + i.ToString() + ii.ToString() + '\r';
+                    }
+                    else
+                    {
+                        AddCellGraphic(false, i, ii, canvas);
+                    }
                     liveCounter = 0;
+                }
+            }
+            MessageBox.Show(troubleshoot);
+        }
 
-                    AddCellGraphic(cells[i, ii], i, ii, canvas);
+        public void Changes()
+        {
+            for (int i = 0; i < 20; i++)
+            {
+                for (int ii = 0; ii < 20; ii++)
+                {
+                    cells[i, ii] = tempCells[i, ii];
                 }
             }
         }
@@ -108,11 +134,6 @@ namespace u5GameOfLife
             canvas.Children.Add(cell);
             Canvas.SetLeft(cell, x * 25);
             Canvas.SetTop(cell, y * 25 + 25);
-        }
-
-        public void ClearCells(Canvas canvas)
-        {
-                canvas.Children.Clear();
         }
     }
 }
